@@ -4,7 +4,7 @@ import logging
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-
+path = "/Users/Eric/Desktop" #path to track
 
 def on_created(event):
     print("created")
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     event_handler.on_modified = on_modified
     event_handler.on_moved = on_moved
 
-    path = "/Users/Eric/Desktop"
+     
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
 
