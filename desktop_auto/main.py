@@ -1,33 +1,38 @@
 import sys
 import time
 import logging
+import shutil
+import watchdog
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 path = "/Users/Eric/Desktop" #path to track
 
-def on_created(event):
-    print("created")
 
-def on_deleted(event):
-    print("deleted")
+class Handler(watchdog.events.PatternMatchingEventHandler):
+    def __init__(self):
+        watchdog.events.PatternMatchingEventHandler.__init__(self, patterns=['*.txt'], ignore_patterns = None, ignore_directories = False, case_sensitive = True)
+      
 
-def on_modified(event):
-    print("modified")
+    def on_created(self, event):
+        print("created")
 
-def on_moved(event):
-    print("moved")
+    def on_deleted(self,event):
+        print("deleted")
+
+    def on_modified(self, event):
+        print("modified")
+
+    def on_moved(self, event):
+        print("moved")
 
 if __name__ == "__main__":
 
-    event_handler = FileSystemEventHandler()
+    #event_handler = FileSystemEventHandler()
 
 
-    #calling functions 
-    event_handler.on_created = on_created
-    event_handler.on_deleted = on_deleted
-    event_handler.on_modified = on_modified
-    event_handler.on_moved = on_moved
+    #calling the class handler
+    event_handler = Handler() 
 
      
     observer = Observer()
