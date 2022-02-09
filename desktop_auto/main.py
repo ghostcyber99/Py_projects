@@ -9,13 +9,22 @@ from watchdog.events import FileSystemEventHandler
 path = "/Users/Eric/Desktop" #path to track
 
 
+
 class Handler(watchdog.events.PatternMatchingEventHandler):
     def __init__(self):
-        watchdog.events.PatternMatchingEventHandler.__init__(self, patterns=['*.txt'], ignore_patterns = None, ignore_directories = False, case_sensitive = True)
+        watchdog.events.PatternMatchingEventHandler.__init__(self, patterns=['*.txt', '*.png', '*.jpeg', '*.jpg', '*.mp4'], ignore_patterns = None, ignore_directories = False, case_sensitive = True)
       
 
     def on_created(self, event):
-        print("created")
+        print(f"File was moved to {event.src_path}")
+        if event.src_path.endswith('*.txt'):
+            shutil.move(event.src_path, r'/Users/Eric/Documents')
+        elif event.src_path.endswith('*.png'):
+            shutil.move(event.src_path, r'/Users/Eric/Pictures')
+        elif event.src_path.endswith('*.jpeg'):
+            shutil.move(event.src_path, r'/Users/Eric/Pictures')
+        elif event.src_path.endswith('*.jpg'):
+            shutil.move(event.src_path, r'/Users/Eric/Pictures')
 
     def on_deleted(self,event):
         print("deleted")
@@ -27,6 +36,7 @@ class Handler(watchdog.events.PatternMatchingEventHandler):
         print("moved")
 
 if __name__ == "__main__":
+
 
     #event_handler = FileSystemEventHandler()
 
