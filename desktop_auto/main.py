@@ -7,24 +7,26 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 path = "/Users/Eric/Desktop" #path to track
-
+ext = ['*.txt', '*.png', '*.jpeg', '*.jpg', '*.mp4']
 
 
 class Handler(watchdog.events.PatternMatchingEventHandler):
     def __init__(self):
-        watchdog.events.PatternMatchingEventHandler.__init__(self, patterns=['*.txt', '*.png', '*.jpeg', '*.jpg', '*.mp4'], ignore_patterns = None, ignore_directories = False, case_sensitive = True)
+        watchdog.events.PatternMatchingEventHandler.__init__(self, patterns=[ext], ignore_patterns = None, ignore_directories = False, case_sensitive = True)
       
 
     def on_created(self, event):
         print(f"File was moved to {event.src_path}")
-        if event.src_path.endswith('*.txt'):
+        if event.src_path.endswith(ext[0]):
             shutil.move(event.src_path, r'/Users/Eric/Documents')
-        elif event.src_path.endswith('*.png'):
+        elif event.src_path.endswith(ext[1]):
             shutil.move(event.src_path, r'/Users/Eric/Pictures')
-        elif event.src_path.endswith('*.jpeg'):
+        elif event.src_path.endswith(ext[2]):
             shutil.move(event.src_path, r'/Users/Eric/Pictures')
-        elif event.src_path.endswith('*.jpg'):
+        elif event.src_path.endswith(ext[3]):
             shutil.move(event.src_path, r'/Users/Eric/Pictures')
+        elif event.src_path.endswith(ext[4]):
+            shutil.move(event.src_path, r'/Users/Eric/Movies')
 
     def on_deleted(self,event):
         print("deleted")
@@ -38,7 +40,7 @@ class Handler(watchdog.events.PatternMatchingEventHandler):
 if __name__ == "__main__":
 
 
-    #event_handler = FileSystemEventHandler()
+    event_handler = FileSystemEventHandler()
 
 
     #calling the class handler
