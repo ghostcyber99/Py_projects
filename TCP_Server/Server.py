@@ -1,6 +1,6 @@
 #!/user/bin/bash/python3 
 
-from email import message
+from email import message 
 import socket
 
 #serversocket object
