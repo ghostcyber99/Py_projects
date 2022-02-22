@@ -1,3 +1,5 @@
+
+from distutils.log import error
 from operator import index
 from turtle import pos
 from typing import Optional
@@ -5,15 +7,30 @@ from fastapi import FastAPI, Response, status, HTTPException
 from fastapi.params import Body
 from pydantic import BaseModel
 from random import randrange
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import time 
 
 app = FastAPI()
 
 #validating user input
-class Post(BaseModel):
+class Post(BaseModel): 
     title: str
     content: str
     published: bool = True
     rating: Optional[int] = None
+
+while True:
+
+    try:
+        conn = psycopg2.connect(host='localhost', database='fastapi', user='postgres', password='Smith3dx', cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
+        print(" database connected ")
+        break
+    except Exception as error:
+        print("Connection failure")
+        print("Error: ", error)
+        time.sleep(2)    
 
 #saving the post
 my_posts = [{"title": "title of post 1", "content": "content of post1", "id": 1}, {"title": "favorite foods", "content": "i love yam", "id": 2} ]
@@ -22,6 +39,7 @@ def find_post(id):
     for p in my_posts:
         if p["id"] == id:
             return p 
+
 
 def find_index_post(id):
     for i , p in enumerate(my_posts):
