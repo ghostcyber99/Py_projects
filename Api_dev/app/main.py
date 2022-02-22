@@ -54,14 +54,17 @@ def read_root():
 #Post method
 @app.get("/posts")
 def get_posts():
-    return{"data": my_posts}
+    cursor.execute(""" SELECT * FROM "Socialmedia_posts" """)
+    posts = cursor.fetchall()
+    return{"data": posts}
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_posts(post: Post):   
-    post_dict = post.dict() #creatig a brand new post from the python dictionary 
-    post_dict['id'] = randrange(0, 10000000) #assign the id in the dict with a random number 
-    my_posts.append(post_dict) #converting pydantic model to a dictionary and appeding it to an array
-    return{"data": post_dict}
+    #preventing sqli and also validating user input
+    cursor.execute(""" INSERT INTO socialmedia_posts (title, content) VALUES (%s, %s) RETURNING * """, (post.title, post.content))
+    new_post = cursor.fetchone
+    conn.commit()
+    return{"data": new_post}
 
 #calling a particular post id 
 @app.get("/posts/{id}")
