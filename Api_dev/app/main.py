@@ -69,33 +69,39 @@ def create_posts(post: Post):
 #calling a particular post id 
 @app.get("/posts/{id}")
 def get_post(id: int, response: Response):
-    post = find_post(id)
+    cursor.execute(""" SELECT * FROM socialmedia_posts WHERE id = %s """, (str(id)))
+    post = cursor.fetchone()
     if not post :
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        #error handling 
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
         detail=f"post with id: {id} was not found ")
     return{"post_details": post}
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
-    index = find_index_post(id)
+
+    cursor.execute(""" DELETE FROM socialmedia_posts WHERE ID = %s RETURNING *""", (str(id),))
+    deleted_post = cursor.fetchone()
+
+    conn.commit()
     #when id is not correct
-    if index == None:
+    if deleted_post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
         detail=f"post with id: {id} does not exist")
-    my_posts.pop(index)
+   
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @app.put("/posts/{id}")
 def update_post(id: int, post: Post):
+    cursor.execute(""" UPDATE socialmedia_posts SET title= %s, content = %s WHERE id = %s RETURNING * """, (post.title, post.content, str(id)))
+    updated_post = cursor.fetchone()
+    conn.commit()
     #find the index
-    index = find_index_post(id)
-    if index == None:
+    
+    if updated_post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
         detail=f"post with id: {id} does not exist")
-    #converting to a python dictionary 
-    post_dict = post.dict()
-    post_dict['id'] = id
-    my_posts[index] = post_dict
-    return{"data": post_dict}
+    
+    return{"data": updated_post}
