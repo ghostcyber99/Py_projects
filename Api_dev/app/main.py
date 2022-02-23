@@ -3,15 +3,21 @@ from distutils.log import error
 from operator import index
 from turtle import pos
 from typing import Optional
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import FastAPI, Response, status, HTTPException, Depends
 from fastapi.params import Body
 from pydantic import BaseModel
 from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time 
+from . import models
+from .database import  engine, get_db
+from sqlalchemy.orm import Session
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
 
 #validating user input
 class Post(BaseModel): 
@@ -19,7 +25,7 @@ class Post(BaseModel):
     content: str
     published: bool = True
     rating: Optional[int] = None
-
+ 
 while True:
 
     try:
@@ -41,7 +47,7 @@ def find_post(id):
             return p 
 
 
-def find_index_post(id):
+def find_index_post(id):   
     for i , p in enumerate(my_posts):
         if p['id'] == id:
             return i
@@ -50,6 +56,10 @@ def find_index_post(id):
 @app.get("/")
 def read_root():
     return {"message": "welcome to my api"}
+
+@app.get("/sqlalchemy")
+def test_posts(db: Session = Depends(get_db)):
+    return{"status ": "seccess"}
 
 #Post method
 @app.get("/posts")
