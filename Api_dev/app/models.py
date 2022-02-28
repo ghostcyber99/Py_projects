@@ -11,3 +11,4 @@ class Post(Base):
       published = Column(Boolean, server_default='True', nullable=False)
         
 
+  

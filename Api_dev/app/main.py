@@ -11,7 +11,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import time 
 from . import models
-from .database import  engine, get_db
+from . database import  engine, get_db
 from sqlalchemy.orm import Session
 
 models.Base.metadata.create_all(bind=engine)
