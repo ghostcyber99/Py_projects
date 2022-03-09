@@ -29,7 +29,7 @@ class Post(BaseModel):
 while True:
 
     try:
-        conn = psycopg2.connect(host='localhost', database='fastapi', user='postgres', password='Smith3dx', cursor_factory=RealDictCursor)
+        conn = psycopg2.connect(host='localhost', database='fastapi', user='postgres', password='', cursor_factory=RealDictCursor)
         cursor = conn.cursor()
         print(" database connected ")
         break
